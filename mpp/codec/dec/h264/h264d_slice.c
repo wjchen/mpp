@@ -305,7 +305,11 @@ static MPP_RET set_slice_user_parmeters(H264_SLICE_t *currSlice)
     cur_pps = &p_Vid->ppsSet[currSlice->pic_parameter_set_id];
     cur_pps = (cur_pps && cur_pps->Valid) ? cur_pps : NULL;
     VAL_CHECK(ret, cur_pps != NULL);
-
+    if (cur_pps->seq_parameter_set_id < 0 || cur_pps->seq_parameter_set_id >= MAXPPS) {
+        ret = -1;
+        goto __FAILED;
+    }
+    
     if (currSlice->mvcExt.valid) {
         cur_sps = &p_Vid->subspsSet[cur_pps->seq_parameter_set_id].sps;
         cur_subsps = &p_Vid->subspsSet[cur_pps->seq_parameter_set_id];
